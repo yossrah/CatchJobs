@@ -27,6 +27,10 @@ export class CreateJobDto {
     @IsNumber()
     nb_postes:number
 
+    @IsNotEmpty()
+    @IsString()
+    localisation:string;
+
     @IsNumber()
     salaire:number
 

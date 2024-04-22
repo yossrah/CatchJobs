@@ -2,6 +2,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { City } from "src/entities/city.entity";
 import { Domaine } from "src/entities/domaine.entity";
+import { Entreprise } from "src/entities/entreprise.entity";
 import { Job } from "src/entities/job.entity";
 
 export default class TypeOrmConfig {
@@ -13,7 +14,7 @@ export default class TypeOrmConfig {
             username: String(configService.get('DB_USERNAME'))  ,
             password: configService.get('PASSWORD') ,
             database: configService.get('DATABASE'),
-            entities: [Job,City,Domaine],
+            entities: [Job,City,Domaine,Entreprise],
             synchronize: Boolean(configService.get('TYPEORM_SYNC'))
         }
         return typeOrmConfig;

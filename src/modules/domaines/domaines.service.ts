@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDomaineDto } from './dto/create-domaine.dto';
 import { UpdateDomaineDto } from './dto/update-domaine.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,12 +16,20 @@ export class DomainesService {
   }
 
   async findAll():Promise<Domaine[]> {
-    const domaines=await this.domainRepository.find()
+    const domaines=await this.domainRepository.find({relations:['entreprises','jobs']})
     return domaines
   }
 
   async findOne(id: number):Promise<Domaine> {
-   const domain = await this.domainRepository.findOneBy({id})
+   const domain = await this.domainRepository.findOne({
+    where: {
+      id,
+    },
+    relations:['entreprises','jobs']
+  })
+   if (!domain) {
+    throw new NotFoundException(`city with id ${id} not found`);
+}
    return domain
   }
 

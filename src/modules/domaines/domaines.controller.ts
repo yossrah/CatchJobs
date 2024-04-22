@@ -2,23 +2,24 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { DomainesService } from './domaines.service';
 import { CreateDomaineDto } from './dto/create-domaine.dto';
 import { UpdateDomaineDto } from './dto/update-domaine.dto';
+import { Domaine } from 'src/entities/domaine.entity';
 
 @Controller('domaines')
 export class DomainesController {
   constructor(private readonly domainesService: DomainesService) {}
 
   @Post()
-  create(@Body() createDomaineDto: CreateDomaineDto) {
+  create(@Body() createDomaineDto: CreateDomaineDto):Promise<Domaine> {
     return this.domainesService.create(createDomaineDto);
   }
 
   @Get()
-  findAll() {
+  findAll():Promise<Domaine[]> {
     return this.domainesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string):Promise<Domaine> {
     return this.domainesService.findOne(+id);
   }
 

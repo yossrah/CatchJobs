@@ -1,4 +1,7 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { City } from "./city.entity";
+import { Domaine } from "./domaine.entity";
+import { Entreprise } from "./entreprise.entity";
 
 @Entity({name:"jobs"})
 export class Job extends BaseEntity{
@@ -39,7 +42,17 @@ export class Job extends BaseEntity{
   @Column()
   ExpiresAt:Date
 
+  @Column({ type: 'varchar'})
+  localisation: string;
+
   //author,domaine,entreprice,recommandations/candidatures
 
-  
+  @ManyToOne(()=>City,(city)=>city.jobs)
+  city:City
+
+  @ManyToOne(()=>Domaine,(domaine)=>domaine.jobs)
+  domaine:Domaine
+
+  @ManyToOne(()=>Entreprise,(entreprise)=>entreprise.jobs)
+  entreprise:Entreprise
 }
