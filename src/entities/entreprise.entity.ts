@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Domaine } from "./domaine.entity";
 import { City } from "./city.entity";
 import { Job } from "./job.entity";
@@ -25,6 +25,7 @@ export class Entreprise extends BaseEntity{
   domaines: Domaine[];
 
   @ManyToOne(()=>City,(city)=>city.entreprises)
+  @JoinTable()
   city:City
 
   @OneToMany(()=>Job,(job)=>job.entreprise)

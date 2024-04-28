@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, Put } from '@nestjs/common';
 import { EntreprisesService } from './entreprises.service';
 import { CreateEntrepriseDto } from './dto/create-entreprise.dto';
 import { UpdateEntrepriseDto } from './dto/update-entreprise.dto';
@@ -15,8 +15,8 @@ export class EntreprisesController {
   }
 
   @Get()
-  findAll(@Query('domain') domain:string, @Query('city') city:string, @Query('currentPage') currentPage:number=1):Promise<Entreprise []> {
-    return this.entreprisesService.findAll(domain, city, currentPage);
+  findAll(@Query('name') name:string , @Query('domain') domain:string, @Query('city') city:string='', @Query('currentPage') currentPage:number=1):Promise<Entreprise []> {
+    return this.entreprisesService.findAll(name,domain, city, currentPage);
   }
 
   @Get(':id')
@@ -34,9 +34,14 @@ export class EntreprisesController {
     return this.entreprisesService.remove(id);
   }
 
-  @Post('pushdomain/:id')
+  @Put('pushdomain/:id')
   pushDomaine(@Param('id',ParseIntPipe) id: number, @Body() pushdomain: CreateDomaineDto) {
     console.log('id',id)
     return this.entreprisesService.pushDomaine(id, pushdomain);
+  }
+
+  @Put('pulldomain/:id')
+  pullDomaine(@Param('id',ParseIntPipe) id: number, @Body() pulldomain: CreateDomaineDto) {
+    return this.entreprisesService.pullDomaine(id, pulldomain);
   }
 }

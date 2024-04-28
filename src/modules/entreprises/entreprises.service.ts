@@ -26,17 +26,47 @@ export class EntreprisesService {
     return await this.entrepriseRepository.save(new_entreprise)
   }
 
-  async findAll(domain:string, city:string, currentPage:number):Promise<Entreprise[]> {
-    const resPerPage = 7
+  async findAll(name:string ,domain:string, city:string, currentPage:number):Promise<Entreprise[]> {
+    const resPerPage = 3
     const skip = resPerPage * (currentPage - 1)
-    const queryBuilder = this.entrepriseRepository.createQueryBuilder('entreprise')
-        .leftJoinAndSelect('entreprise.city', 'city')
-        .andWhere('city.city = :city', { city: city })
-        .take(resPerPage)
-        .skip(skip);
-
-    const entreprises = await queryBuilder.getMany();
-    return entreprises;
+    //Query builder is a mechanism to interact with db and used build complex SQL queries in an easy way
+    // 'entreprise' refer to the entreprise entity.
+    //andWhere and not where to make them works together
+    let queryBuilder= this.entrepriseRepository.createQueryBuilder('entreprise')
+    if (city) {
+      const existcity=await this.cityRepository.findOneBy({city})
+      if(!existcity){
+        throw new HttpException('City not found', HttpStatus.BAD_REQUEST)
+      }
+      
+      queryBuilder = queryBuilder
+      //.leftJoinAndSelect('entreprise.city', 'city')
+                   //.leftJoinAndSelect('entreprise.domaines', 'domaines')
+                   .andWhere('city.id = :cityId', {cityId: existcity.id});
+    }
+    if (domain) {
+      const existdomain=await this.domainRepository.findOneBy({name:domain})
+      if(!existdomain){
+        throw new HttpException('Domain not found', HttpStatus.BAD_REQUEST)
+      }
+      
+      queryBuilder = queryBuilder
+      //.leftJoinAndSelect('entreprise.domaines', 'domaines')
+                   // .leftJoinAndSelect('entreprise.city', 'city')
+                   .andWhere('domaines.id = :domainId', {domainId: existdomain.id});
+    }
+   /* if (name) {
+      queryBuilder = queryBuilder
+      //.leftJoinAndSelect('entreprise.name', 'name')
+                   .andWhere('entreprise.name LIKE :name OR entreprise.localisation LIKE name', {name});
+    }*/
+    const [entreprises,totalCount]=await queryBuilder
+    .leftJoinAndSelect('entreprise.city', 'city')
+   .leftJoinAndSelect('entreprise.domaines', 'domaines')
+   .skip(skip)
+   .take(resPerPage)
+    .getManyAndCount()
+    return entreprises
   }
 
   async findOne(id: number):Promise<Entreprise> {
@@ -61,16 +91,39 @@ export class EntreprisesService {
   }
 
   async pushDomaine(id: number,pushdomain:CreateDomaineDto):Promise<Entreprise> {
-    const entreprise=await this.entrepriseRepository.findOneBy({id})
+    const entreprise=await this.entrepriseRepository.findOne({where: {
+      id,
+    },
+    relations:['domaines']})
     if (!entreprise) {
       throw new NotFoundException(`city with id ${id} not found`);
   }
     const domain=await this.domainRepository.findOneBy(pushdomain)
-    //console.log(pushdomain)
+    console.log(domain)
     if (!domain) {
       throw new NotFoundException(`domain with name ${pushdomain} not found`);
     }
-    //entreprise.domaines.push([...City,domain])
+    const domaines: Domaine[] = entreprise.domaines;
+    console.log(domaines)
+    entreprise.domaines.push(domain)
+    return await this.entrepriseRepository.save(entreprise)
+  }
+
+  async pullDomaine(id: number,pulldomain:CreateDomaineDto):Promise<Entreprise> {
+    const entreprise=await this.entrepriseRepository.findOne({where: {
+      id,
+    },
+    relations:['domaines']})
+     if (!entreprise) {
+      throw new NotFoundException(`city with id ${id} not found`);
+    }
+    const domain=await this.domainRepository.findOneBy(pulldomain)
+    //console.log(pushdomain)
+    if (!domain) {
+      throw new NotFoundException(`domain with name ${pulldomain} not found`);
+    }
+    entreprise.domaines.splice(domain.id-1,1)
+    console.log(entreprise.domaines)
     return await this.entrepriseRepository.save(entreprise)
   }
 }
