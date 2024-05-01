@@ -4,6 +4,7 @@ import { CreateEntrepriseDto } from './dto/create-entreprise.dto';
 import { UpdateEntrepriseDto } from './dto/update-entreprise.dto';
 import { Entreprise } from 'src/entities/entreprise.entity';
 import { CreateDomaineDto } from '../domaines/dto/create-domaine.dto';
+import { CreateCityDto } from '../cities/dto/create-city.dto';
 
 @Controller('entreprises')
 export class EntreprisesController {
@@ -17,6 +18,11 @@ export class EntreprisesController {
   @Get()
   findAll(@Query('name') name:string , @Query('domain') domain:string, @Query('city') city:string='', @Query('currentPage') currentPage:number=1):Promise<Entreprise []> {
     return this.entreprisesService.findAll(name,domain, city, currentPage);
+  }
+
+  @Get('/job/:id')
+  findByJob(@Param('id',ParseIntPipe) id: number):Promise<Entreprise[]> {
+    return this.entreprisesService.findByjob(id);
   }
 
   @Get(':id')
@@ -43,5 +49,15 @@ export class EntreprisesController {
   @Put('pulldomain/:id')
   pullDomaine(@Param('id',ParseIntPipe) id: number, @Body() pulldomain: CreateDomaineDto) {
     return this.entreprisesService.pullDomaine(id, pulldomain);
+  }
+
+  @Put('pushcity/:id')
+  pushCity(@Param('id',ParseIntPipe) id: number, @Body() city: CreateCityDto ) {
+    return this.entreprisesService.pushCity(id, city);
+  }
+
+  @Put('pullcity/:id')
+  pullCity(@Param('id',ParseIntPipe) id: number, @Body() city:CreateCityDto ) {
+    return this.entreprisesService.pullCity(id, city);
   }
 }

@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany
 import { Domaine } from "./domaine.entity";
 import { City } from "./city.entity";
 import { Job } from "./job.entity";
+import { User } from "./user.entity";
 
 @Entity({name:"entreprises"})
 export class Entreprise extends BaseEntity{
@@ -30,5 +31,8 @@ export class Entreprise extends BaseEntity{
 
   @OneToMany(()=>Job,(job)=>job.entreprise)
   jobs:Job[]
+
+  /*@OneToMany(()=>User,(job)=>user.entreprise)
+  recruteurs:User[]*/
 
 }

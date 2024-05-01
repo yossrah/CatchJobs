@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { City } from 'src/entities/city.entity';
 import { Domaine } from 'src/entities/domaine.entity';
 import { CreateDomaineDto } from '../domaines/dto/create-domaine.dto';
+import { CreateCityDto } from '../cities/dto/create-city.dto';
 
 @Injectable()
 export class EntreprisesService {
@@ -126,4 +127,52 @@ export class EntreprisesService {
     console.log(entreprise.domaines)
     return await this.entrepriseRepository.save(entreprise)
   }
+
+  async pushCity(id: number,city:CreateCityDto):Promise<Entreprise> {
+    const entreprise=await this.entrepriseRepository.findOne({where: {
+      id,
+    },
+    relations:['city']})
+    if (!entreprise) {
+      throw new NotFoundException(`entreprise not found`);
+  }
+    const existcity=await this.cityRepository.findOneBy(city)
+    if (!existcity) {
+      throw new NotFoundException(`city with name ${city} not found`);
+    }
+    entreprise.city=existcity
+    return await this.entrepriseRepository.save(entreprise)
+  }
+
+  async pullCity(id: number,city:CreateCityDto):Promise<Entreprise> {
+    const entreprise=await this.entrepriseRepository.findOne({where: {
+      id,
+    },
+    relations:['city']})
+     if (!entreprise) {
+      throw new NotFoundException(`entreprise not found`);
+    }
+    console.log(entreprise)
+    const existcity=await this.cityRepository.findOneBy(city)
+    //console.log(pushdomain)
+    if (!existcity) {
+      throw new NotFoundException(`city not found`);
+    }
+    //console.log("entrepriseCity",entreprise.city.id==existcity.id)
+    if(entreprise.city.id!==existcity.id){
+      throw new NotFoundException(`city not found`);
+    }
+    entreprise.city=null
+    return await this.entrepriseRepository.save(entreprise)
+  }
+
+  async findByjob(id:number):Promise<Entreprise[]>{
+    const entreprise=await this.entrepriseRepository.find({
+      relations:['City','domaines']
+    })
+    if (!entreprise) {
+      throw new NotFoundException(`city with id ${id} not found`);
+  }
+  return entreprise
+}
 }
