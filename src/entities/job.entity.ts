@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "t
 import { City } from "./city.entity";
 import { Domaine } from "./domaine.entity";
 import { Entreprise } from "./entreprise.entity";
+import { User } from "./user.entity";
 
 @Entity({name:"jobs"})
 export class Job extends BaseEntity{
@@ -42,9 +43,6 @@ export class Job extends BaseEntity{
   @Column()
   ExpiresAt:Date
 
-  @Column({ type: 'varchar'})
-  localisation: string;
-
   //author,domaine,entreprice,recommandations/candidatures
 
   @ManyToOne(()=>City,(city)=>city.jobs)
@@ -55,4 +53,7 @@ export class Job extends BaseEntity{
 
   @ManyToOne(()=>Entreprise,(entreprise)=>entreprise.jobs)
   entreprise:Entreprise
+
+  @ManyToOne(()=>User,(user)=>user.jobs)
+  recruteur:User
 }

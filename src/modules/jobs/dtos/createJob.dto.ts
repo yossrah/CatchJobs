@@ -1,4 +1,8 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { City } from "src/entities/city.entity";
+import { Domaine } from "src/entities/domaine.entity";
+import { Entreprise } from "src/entities/entreprise.entity";
+import { User } from "src/entities/user.entity";
 
 export class CreateJobDto {
     @IsString()
@@ -27,15 +31,20 @@ export class CreateJobDto {
     @IsNumber()
     nb_postes:number
 
-    @IsNotEmpty()
-    @IsString()
-    localisation:string;
-
     @IsNumber()
     salaire:number
 
     ExpiresAt:Date
 
     isAvailable:boolean
+
+    @IsNotEmpty()  
+    city:City
+
+    @IsNotEmpty()
+    domaine:Domaine
+
+    /*@IsNotEmpty()
+    entreprise:Entreprise*/
 
 }

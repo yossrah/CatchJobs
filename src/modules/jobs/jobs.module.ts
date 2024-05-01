@@ -6,9 +6,10 @@ import { Job } from 'src/entities/job.entity';
 import { City } from 'src/entities/city.entity';
 import { Domaine } from 'src/entities/domaine.entity';
 import { Entreprise } from 'src/entities/entreprise.entity';
+import { User } from 'src/entities/user.entity';
 
 @Module({
-  imports :[TypeOrmModule.forFeature([Job,City,Domaine,Entreprise])],
+  imports :[TypeOrmModule.forFeature([Job,City,Domaine,Entreprise,User])],
   providers: [JobsService],
   controllers: [JobsController]
 })

@@ -4,6 +4,7 @@ import { City } from "src/entities/city.entity";
 import { Domaine } from "src/entities/domaine.entity";
 import { Entreprise } from "src/entities/entreprise.entity";
 import { Job } from "src/entities/job.entity";
+import { User } from "src/entities/user.entity";
 
 export default class TypeOrmConfig {
     static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
@@ -14,7 +15,7 @@ export default class TypeOrmConfig {
             username: String(configService.get('DB_USERNAME'))  ,
             password: configService.get('PASSWORD') ,
             database: configService.get('DATABASE'),
-            entities: [Job,City,Domaine,Entreprise],
+            entities: [Job,City,Domaine,Entreprise,User],
             synchronize: Boolean(configService.get('TYPEORM_SYNC'))
         }
         return typeOrmConfig;

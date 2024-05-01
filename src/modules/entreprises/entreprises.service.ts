@@ -166,13 +166,32 @@ export class EntreprisesService {
     return await this.entrepriseRepository.save(entreprise)
   }
 
-  async findByjob(id:number):Promise<Entreprise[]>{
-    const entreprise=await this.entrepriseRepository.find({
-      relations:['City','domaines']
+  //id of the job
+  async findByjob(jobId:number):Promise<Entreprise[]>{
+    const entreprise=await this.entrepriseRepository.find({where: {
+      jobs: {
+        id: jobId
+      }
+    },
+      relations:['city','domaines','jobs']
     })
     if (!entreprise) {
-      throw new NotFoundException(`city with id ${id} not found`);
+      throw new NotFoundException(`entreprise not found`);
   }
   return entreprise
+}
+
+async findBydoamin(domainId:number): Promise<Entreprise[]>{
+  const entreprises=await this.entrepriseRepository.find({where: {
+    domaines: {
+      id: domainId
+    }
+  },
+    relations:['city','domaines','jobs']
+  })
+  if (!entreprises) {
+    throw new NotFoundException(`entreprise not found`);
+}
+return entreprises
 }
 }

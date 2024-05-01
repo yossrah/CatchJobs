@@ -25,6 +25,11 @@ export class EntreprisesController {
     return this.entreprisesService.findByjob(id);
   }
 
+  @Get('/domain/:id')
+  findByDomain(@Param('id',ParseIntPipe) id: number):Promise<Entreprise[]> {
+    return this.entreprisesService.findBydoamin(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string):Promise<Entreprise> {
     return this.entreprisesService.findOne(+id);
